@@ -24,4 +24,9 @@ public class User {
     @JsonIgnore
     private String password;
     private String authorities;
+
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
+    @JsonIgnore
+    private List<Basket> basket;
 }
