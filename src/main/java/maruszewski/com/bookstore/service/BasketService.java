@@ -2,6 +2,7 @@ package maruszewski.com.bookstore.service;
 
 import lombok.RequiredArgsConstructor;
 import maruszewski.com.bookstore.dtos.BasketBooksDto;
+import maruszewski.com.bookstore.errors.ResourceNotFoundException;
 import maruszewski.com.bookstore.models.Basket;
 import maruszewski.com.bookstore.models.Book;
 import maruszewski.com.bookstore.models.Orders;
@@ -25,11 +26,11 @@ public class BasketService {
     private final OrderRepository orderRepository;
 
     public Basket getSingleBasket(Long id){
-        return basketRepository.findById(id).orElseThrow();
+        return basketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
     }
 
     public Page<Book> getBasketBooks(Long id, Pageable pageable) {
-        Basket basket = basketRepository.findById(id).orElseThrow();
+        Basket basket = basketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
         List<Book> books = basket.getBooks();
         return new PageImpl<>(books);
     }
@@ -59,13 +60,13 @@ public class BasketService {
     }
 
     public Basket clearBasket(Long id) {
-        Basket basket = basketRepository.findById(id).orElseThrow();
+        Basket basket = basketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
         basket.setBooks(new ArrayList<>());
         return basketRepository.save(basket);
     }
 
     public Orders postOrder(Long id) {
-        Basket basket = basketRepository.findById(id).orElseThrow();
+        Basket basket = basketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
         Orders order = new Orders();
         order.setBooks(new ArrayList<Book>(basket.getBooks()));
         order.setUser(basket.getUser());

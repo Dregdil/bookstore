@@ -2,6 +2,7 @@ package maruszewski.com.bookstore.service;
 
 import lombok.RequiredArgsConstructor;
 import maruszewski.com.bookstore.dtos.BookDto;
+import maruszewski.com.bookstore.errors.ResourceNotFoundException;
 import maruszewski.com.bookstore.models.Basket;
 import maruszewski.com.bookstore.models.Book;
 import maruszewski.com.bookstore.repository.BasketRepository;
@@ -26,7 +27,7 @@ public class BookService {
     }
 
     public Book getSingleBook(Long id) {
-        return bookRepository.findById(id).orElseThrow();
+        return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
     }
 
     public Book addSingleBook(BookDto bookDto) {
@@ -39,7 +40,7 @@ public class BookService {
 
     public Book updateSingleBook(Long id, BookDto bookDto) {
         Book book = bookRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
         book.setTitle(bookDto.getTitle());
         book.setPrice(bookDto.getPrice());
         book.setAuthor(bookDto.getAuthor());
@@ -48,7 +49,7 @@ public class BookService {
     }
 
     public void deleteSingleBook(long id) {
-        Book book = bookRepository.findById(id).orElseThrow();
+        Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
         List<Basket> baskets = basketRepository.getBasketsByBooks(book);
         for(Basket b: baskets)
         {

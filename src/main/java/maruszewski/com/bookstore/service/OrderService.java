@@ -2,6 +2,7 @@ package maruszewski.com.bookstore.service;
 
 import lombok.RequiredArgsConstructor;
 import maruszewski.com.bookstore.dtos.OrderStatusDto;
+import maruszewski.com.bookstore.errors.ResourceNotFoundException;
 import maruszewski.com.bookstore.models.Orders;
 import maruszewski.com.bookstore.repository.OrderRepository;
 import org.springframework.data.domain.Page;
@@ -18,11 +19,11 @@ public class OrderService {
     }
 
     public Orders getSingleOrder(Long id) {
-        return orderRepository.findById(id).orElseThrow();
+        return orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
     }
 
     public Orders updateSingleOrder(Long id, OrderStatusDto orderStatusDto) {
-        Orders order = orderRepository.findById(id).orElseThrow();
+        Orders order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
         order.setStatus(orderStatusDto.getStatus());
 
         return orderRepository.save(order);

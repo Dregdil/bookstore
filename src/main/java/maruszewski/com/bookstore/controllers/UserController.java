@@ -91,7 +91,7 @@ public class UserController {
 
     @GetMapping("{id}")
     @Operation(summary = "Get User")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @userService.getSingle(#id).login == authentication.name")
     public EntityModel<User> getSingleUser(@PathVariable("id") Long id) {
         User user = userService.getSingle(id);
         return userModelAssembler.toModel(user);

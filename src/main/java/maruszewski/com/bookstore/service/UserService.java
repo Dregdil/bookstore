@@ -2,6 +2,7 @@ package maruszewski.com.bookstore.service;
 
 
 import maruszewski.com.bookstore.dtos.UserDto;
+import maruszewski.com.bookstore.errors.ResourceNotFoundException;
 import maruszewski.com.bookstore.models.Basket;
 import maruszewski.com.bookstore.models.Orders;
 import maruszewski.com.bookstore.models.User;
@@ -59,7 +60,7 @@ public class UserService {
     }
 
     public User getSingle(Long id){
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
     }
 
     public Optional<User> findByLogin(String login) {
@@ -79,7 +80,7 @@ public class UserService {
     }
 
     public User patchUser(Long id, UserDto data) {
-        User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
         user.setEmail(data.getEmail());
         user.setLogin(data.getLogin());
         user.setPassword(passwordEncoder.encode(data.getPassword()));
@@ -88,7 +89,7 @@ public class UserService {
     }
 
     public Basket getBasket(Long id) {
-        return basketRepository.findByUserId(id).orElseThrow();
+        return basketRepository.findByUserId(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
     }
 
     public Page<Orders> getOrders(Long id, Pageable page) {
